@@ -1,0 +1,29 @@
+tesla=yf.Ticker("TSLA")
+tesla_data=tesla.history(period="max")
+tesla_data.reset_index(inplace=True)
+tesla_data.head(5)
+html_data=requests.get("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/revenue.htm").text
+prase=BeautifulSoup(html_data,"html.parser")
+table=pd.read_html("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/revenue.htm")
+tesla_revenue=table[1]
+tesla_revenue.columns=["Date","Revenue"]
+tesla_revenue["Revenue"] = tesla_revenue['Revenue'].str.replace(r"[,\$]", "", regex=True)
+tesla_revenue.dropna(inplace=True)
+
+tesla_revenue = tesla_revenue[tesla_revenue['Revenue'] != ""]
+tesla_revenue.tail(5)
+gamestop=yf.Ticker("GME")
+gme_data=gamestop.history(period="max")
+gme_data.reset_index(inplace=True)
+gme_data.head(5)
+html_data_2=requests.get("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/stock.html").text
+ss=BeautifulSoup(html_data_2,"html.parser")
+tables=pd.read_html("https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0220EN-SkillsNetwork/labs/project/stock.html")
+gme_revenue=tables[1]
+gme_revenue.columns=["Date","Revenue"]
+gme_revenue["Revenue"] = gme_revenue['Revenue'].str.replace(r"[,\$]", "", regex=True)
+gme_revenue.dropna(inplace=True)
+gme_revenue = gme_revenue[gme_revenue['Revenue'] != ""]
+gme_revenue.tail(5)
+make_graph(tesla_data, tesla_revenue, "Tesla")
+make_graph(gme_data, gme_revenue, 'GameStop')
